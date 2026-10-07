@@ -1,0 +1,743 @@
+/* =========================================================
+   🎬 Colección de películas: estilos
+   Funciona con las tarjetas actuales (div sin clase) y con
+   las de la guía del jueves (.tarjeta con .nota, .resumen,
+   .fecha y .generos)
+   ========================================================= */
+
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap");
+
+:root {
+  --fondo: #0d0f14;
+  --fondo-tarjeta: #171a22;
+  --borde: #262a36;
+  --texto: #e8e9ee;
+  --texto-suave: #9a9fb0;
+  --acento: #f5c518; /* amarillo "cine" */
+  --acento-2: #e50914; /* rojo */
+  --radio: 14px;
+  --sombra: 0 10px 30px rgba(0, 0, 0, 0.45);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Inter", Arial, sans-serif;
+  background:
+    radial-gradient(circle at 15% 0%, rgba(229, 9, 20, 0.18), transparent 40%),
+    radial-gradient(circle at 85% 10%, rgba(245, 197, 24, 0.1), transparent 35%),
+    var(--fondo);
+  background-attachment: fixed;
+  color: var(--texto);
+}
+
+/* ---------- Cabecera ---------- */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: 1.2rem 1.5rem;
+  background: rgba(13, 15, 20, 0.85);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--borde);
+  text-align: center;
+}
+
+h1 {
+  margin: 0;
+  font-family: "Bebas Neue", Impact, sans-serif;
+  font-weight: 400;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  letter-spacing: 2px;
+  color: var(--texto);
+}
+
+h1::before {
+  content: "🎬 ";
+}
+
+/* ---------- Controles (buscador, botones, selects) ---------- */
+#controles {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+input,
+select,
+button {
+  font: inherit;
+  font-size: 0.95rem;
+  color: var(--texto);
+  background: var(--fondo-tarjeta);
+  border: 1px solid var(--borde);
+  border-radius: 999px;
+  padding: 0.6rem 1.1rem;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s, transform 0.1s;
+}
+
+input[type="search"] {
+  min-width: min(320px, 100%);
+}
+
+input:focus,
+select:focus {
+  border-color: var(--acento);
+  box-shadow: 0 0 0 3px rgba(245, 197, 24, 0.2);
+}
+
+button {
+  cursor: pointer;
+  font-weight: 500;
+}
+
+button:hover {
+  border-color: var(--acento);
+}
+
+button:active {
+  transform: scale(0.96);
+}
+
+button.activo {
+  background: var(--acento);
+  border-color: var(--acento);
+  color: #111;
+  font-weight: 600;
+}
+
+select {
+  cursor: pointer;
+}
+
+#contador {
+  margin: 0.8rem 0 0;
+  font-size: 0.85rem;
+  color: var(--texto-suave);
+}
+
+/* ---------- Cuadrícula ---------- */
+section {
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+#cuadricula_peliculas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 1.5rem;
+  padding: 2rem 1.5rem;
+}
+
+/* ---------- Tarjeta ---------- */
+#cuadricula_peliculas > div {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--fondo-tarjeta);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  overflow: hidden;
+  box-shadow: var(--sombra);
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  animation: aparecer 0.4s ease both;
+}
+
+#cuadricula_peliculas > div:hover {
+  transform: translateY(-6px);
+  border-color: var(--acento);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px var(--acento);
+}
+
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+#cuadricula_peliculas img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  background: #222;
+  transition: filter 0.25s;
+}
+
+#cuadricula_peliculas > div:hover img {
+  filter: brightness(1.08);
+}
+
+#cuadricula_peliculas h2 {
+  margin: 0.9rem 1rem 0.4rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+#cuadricula_peliculas p {
+  margin: 0 1rem 0.5rem;
+  font-size: 0.85rem;
+  color: var(--texto-suave);
+  line-height: 1.45;
+}
+
+/* Valoración: insignia sobre el póster */
+#cuadricula_peliculas > div:not(.tarjeta) > p:nth-of-type(1),
+.tarjeta .nota {
+  position: absolute;
+  top: 0.7rem;
+  left: 0.7rem;
+  margin: 0;
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  color: var(--acento);
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+/* Resumen: máximo 4 líneas */
+#cuadricula_peliculas > div:not(.tarjeta) > p:nth-of-type(2),
+.tarjeta .resumen {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Fecha: al fondo de la tarjeta */
+#cuadricula_peliculas > div:not(.tarjeta) > p:last-child,
+.tarjeta .fecha {
+  margin: auto 0 0;
+  padding: 0.7rem 1rem;
+  border-top: 1px solid var(--borde);
+  font-size: 0.78rem;
+}
+
+/* Géneros (viernes) */
+.tarjeta .generos {
+  color: var(--acento-2);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Mensaje "no hay películas" */
+#cuadricula_peliculas:not(:has(> div)) {
+  display: block;
+  text-align: center;
+  color: var(--texto-suave);
+  font-size: 1.1rem;
+  padding: 4rem 1rem;
+}
+
+/* ---------- Pie ---------- */
+footer {
+  padding: 2rem;
+  text-align: center;
+  color: var(--texto-suave);
+  font-size: 0.8rem;
+  border-top: 1px solid var(--borde);
+}
+
+footer:empty::after {
+  content: "Datos proporcionados por TMDB";
+}
+
+/* ---------- Móvil ---------- */
+@media (max-width: 600px) {
+  #cuadricula_peliculas {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.9rem;
+    padding: 1.2rem 0.9rem;
+  }
+  #cuadricula_peliculas h2 {
+    font-size: 0.95rem;
+  }
+  #cuadricula_peliculas > div:not(.tarjeta) > p:nth-of-type(2),
+  .tarjeta .resumen {
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+  }
+}
+
+/* =========================================================
+   Semana 4: favoritas, estadísticas y detalle (modal)
+   ========================================================= */
+
+/* Corazón de favoritas en la tarjeta */
+.btn-fav {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  width: 2.3rem;
+  height: 2.3rem;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  font-size: 1.1rem;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.btn-fav:hover {
+  transform: scale(1.12);
+  border-color: var(--acento-2);
+}
+
+.tarjeta {
+  cursor: pointer;
+}
+
+/* Panel de estadísticas */
+#estadisticas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 1rem;
+  padding: 1.5rem 1.5rem 0;
+}
+
+#estadisticas:empty {
+  display: none;
+}
+
+#estadisticas div {
+  background: var(--fondo-tarjeta);
+  border: 1px solid var(--borde);
+  border-left: 4px solid var(--acento);
+  border-radius: var(--radio);
+  padding: 0.9rem 1.1rem;
+  min-width: 0;
+}
+
+#estadisticas strong {
+  display: block;
+  font-family: "Bebas Neue", Impact, sans-serif;
+  font-weight: 400;
+  font-size: 1.7rem;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#estadisticas span {
+  font-size: 0.78rem;
+  color: var(--texto-suave);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Detalle (dialog) */
+dialog {
+  width: min(760px, 92vw);
+  padding: 0;
+  border: 1px solid var(--borde);
+  border-radius: 20px;
+  background: var(--fondo-tarjeta);
+  color: var(--texto);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+dialog[open] {
+  animation: aparecer 0.25s ease both;
+}
+
+dialog::backdrop {
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+}
+
+.detalle-fondo {
+  height: 300px;
+  background-size: cover;
+  background-position: center;
+  mask-image: linear-gradient(to bottom, #000 55%, transparent);
+}
+
+.detalle-contenido {
+  position: relative;
+  padding: 0 2rem 2rem;
+  margin-top: -4rem;
+}
+
+.detalle-contenido h2 {
+  margin: 0 0 0.4rem;
+  font-family: "Bebas Neue", Impact, sans-serif;
+  font-weight: 400;
+  font-size: 2.6rem;
+  letter-spacing: 1px;
+  line-height: 1;
+}
+
+.detalle-meta {
+  color: var(--texto-suave);
+  font-size: 0.9rem;
+  margin: 0 0 0.4rem;
+}
+
+.detalle-estrellas {
+  color: var(--acento);
+  font-size: 1.1rem;
+  margin: 0 0 1rem;
+}
+
+.detalle-resumen {
+  line-height: 1.6;
+  margin: 0 0 1.4rem;
+}
+
+.btn-cerrar {
+  position: absolute;
+  top: -12rem;
+  right: 1rem;
+  width: 2.4rem;
+  height: 2.4rem;
+  padding: 0;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.btn-fav-detalle {
+  background: var(--acento-2);
+  border-color: var(--acento-2);
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .detalle-fondo {
+    height: 200px;
+  }
+  .detalle-contenido {
+    padding: 0 1.2rem 1.5rem;
+  }
+  .btn-cerrar {
+    top: -8rem;
+  }
+}
+
+
+/* =========================================================
+   Semana 5: barra superior, carga, errores, ficha ampliada,
+   formularios de acceso y página de gráficos
+   ========================================================= */
+
+/* Barra superior (enlaces + sesión) */
+.barra {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  max-width: 1300px;
+  margin: 0 auto 0.6rem;
+  font-size: 0.9rem;
+}
+
+.barra a {
+  color: var(--texto-suave);
+  text-decoration: none;
+}
+
+.barra a:hover {
+  color: var(--acento);
+}
+
+#sesion {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  color: var(--texto-suave);
+}
+
+#sesion button {
+  padding: 0.35rem 0.9rem;
+  font-size: 0.85rem;
+}
+
+/* Cargando */
+.spinner {
+  display: inline-block;
+  width: 1.1em;
+  height: 1.1em;
+  margin-right: 0.6em;
+  vertical-align: -0.2em;
+  border: 3px solid var(--borde);
+  border-top-color: var(--acento);
+  border-radius: 50%;
+  animation: girar 0.8s linear infinite;
+}
+
+@keyframes girar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.cargando,
+.error-carga {
+  grid-column: 1 / -1;
+  padding: 4rem 1rem;
+  text-align: center;
+  color: var(--texto-suave);
+  font-size: 1.1rem;
+}
+
+.error-carga {
+  color: #ff8a8a;
+  border: 1px dashed #ff8a8a;
+  border-radius: var(--radio);
+}
+
+/* Ficha ampliada en el detalle */
+.detalle-extra {
+  margin: 0 0 1.4rem;
+  color: var(--texto-suave);
+}
+
+.detalle-lema {
+  font-style: italic;
+  color: var(--texto);
+}
+
+.reparto {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: 0.8rem;
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+.reparto li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.75rem;
+  line-height: 1.25;
+}
+
+.reparto img {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border-radius: 10px;
+  background: #222;
+}
+
+.reparto strong {
+  color: var(--texto);
+}
+
+.trailer {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 0;
+  border-radius: 12px;
+}
+
+/* Formularios de acceso */
+.acceso {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  max-width: 900px;
+  margin: 2.5rem auto;
+  padding: 0 1.5rem;
+}
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.8rem;
+  background: var(--fondo-tarjeta);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+}
+
+.formulario h2 {
+  margin: 0 0 0.6rem;
+  font-family: "Bebas Neue", Impact, sans-serif;
+  font-weight: 400;
+  font-size: 2rem;
+  letter-spacing: 1px;
+}
+
+.formulario label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: var(--texto-suave);
+}
+
+.formulario input {
+  border-radius: 10px;
+}
+
+.formulario button {
+  margin-top: 0.6rem;
+  background: var(--acento);
+  border-color: var(--acento);
+  color: #111;
+  font-weight: 600;
+}
+
+.formulario .error {
+  min-height: 1em;
+  margin: 0;
+  font-size: 0.8rem;
+  color: #ff8a8a;
+}
+
+/* Página de gráficos */
+.graficos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 1.5rem;
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.graficos figure {
+  margin: 0;
+  padding: 1.3rem;
+  background: var(--fondo-tarjeta);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+}
+
+.graficos figcaption {
+  margin-bottom: 1rem;
+  font-family: "Bebas Neue", Impact, sans-serif;
+  font-size: 1.5rem;
+  letter-spacing: 1px;
+}
+
+
+/* =========================================================
+   Semana 6: reseñas (Firebase)
+   ========================================================= */
+.resenas {
+  margin-top: 1.8rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--borde);
+}
+
+.resenas h3 {
+  margin: 0 0 0.8rem;
+  font-family: "Bebas Neue", Impact, sans-serif;
+  font-weight: 400;
+  font-size: 1.6rem;
+  letter-spacing: 1px;
+}
+
+.resenas-media {
+  color: var(--acento);
+  font-family: "Inter", Arial, sans-serif;
+  font-size: 0.95rem;
+}
+
+.resenas-formulario a {
+  color: var(--acento);
+}
+
+.form-resena {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.6rem;
+  align-items: start;
+}
+
+.form-resena textarea {
+  font: inherit;
+  font-size: 0.9rem;
+  color: var(--texto);
+  background: var(--fondo);
+  border: 1px solid var(--borde);
+  border-radius: 12px;
+  padding: 0.6rem 0.9rem;
+  resize: vertical;
+}
+
+.form-resena textarea:focus {
+  outline: none;
+  border-color: var(--acento);
+}
+
+.form-resena .error {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: 0.8rem;
+  color: #ff8a8a;
+}
+
+.resenas-lista {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.resenas-lista li {
+  position: relative;
+  padding: 0.8rem 1rem;
+  background: var(--fondo);
+  border: 1px solid var(--borde);
+  border-radius: 12px;
+}
+
+.resenas-lista li p {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.resena-cabecera {
+  margin-bottom: 0.3rem !important;
+  font-size: 0.8rem;
+  color: var(--acento);
+}
+
+.resenas-vacio {
+  color: var(--texto-suave);
+  font-size: 0.9rem;
+}
+
+.btn-borrar-resena {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  padding: 0.2rem 0.7rem;
+  font-size: 0.75rem;
+}
+
+.btn-borrar-resena:hover {
+  border-color: var(--acento-2);
+  color: var(--acento-2);
+}
+
+@media (max-width: 600px) {
+  .form-resena {
+    grid-template-columns: 1fr;
+  }
+}
