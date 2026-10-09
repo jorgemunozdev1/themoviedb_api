@@ -1,26 +1,43 @@
 document.addEventListener("DOMContentLoaded", async function () {
-  const arrayPeliculas = await pedirPeliculas();
-  cargarPeliculas(arrayPeliculas);
+  const todasLasPeliculas = await getPeliculasLocal();
+  buscarPeliculas(todasLasPeliculas);
 });
 
-async function pedirPeliculas() {
-  var arrayPeliculas = [];
+async function getPeliculasLocal() {
+  const solicitudPeliculas = await fetch("./json/peliculas.json");
+  const peliculas = await solicitudPeliculas.json();
 
-  for (let i = 1; i <= 5; i++) {
-    const respuestaPeticion = await fetch(
-      `https://api.themoviedb.org/3/discover/movie?page=${i}&language=es-ES&sort_by=popularity.desc&api_key=${IMDB_API_KEY}`,
-    );
-
-    const objeto = await respuestaPeticion.json();
-
-    for (const pelicula of objeto.results) {
-      arrayPeliculas.push(pelicula);
-    }
-  }
-  return arrayPeliculas;
+  cargarPeliculasEnHTML(peliculas);
+  return peliculas;
 }
 
-function cargarPeliculas(arrayPeliculas) {
+function buscarPeliculas(todasLasPeliculas) {
+  const input = document.getElementById("buscador");
+  input.addEventListener("input", (event) => {
+    let longitud = event.target.value.length;
+    let texto = event.target.value.toLowerCase();
+
+    if (longitud >= 3) {
+      limpiarPeliculas();
+
+      let peliculasBuscadas = todasLasPeliculas.filter((pelicula) =>
+        pelicula.title.toLowerCase().includes(texto),
+      );
+
+      cargarPeliculasEnHTML(peliculasBuscadas);
+    } else {
+      limpiarPeliculas();
+      cargarPeliculasEnHTML(todasLasPeliculas);
+    }
+  });
+}
+
+function limpiarPeliculas() {
+  const contenedor_peliculas = document.getElementById("cuadricula_peliculas");
+  contenedor_peliculas.replaceChildren();
+}
+
+function cargarPeliculasEnHTML(arrayPeliculas) {
   const contenedor_peliculas = document.getElementById("cuadricula_peliculas");
 
   for (const pelicula of arrayPeliculas) {
@@ -40,4 +57,30 @@ function cargarPeliculas(arrayPeliculas) {
     div_pelicula.append(imagen_pelicula, titulo, valoracion, overview, fecha);
     contenedor_peliculas.appendChild(div_pelicula);
   }
+}
+
+async function descargarPeliculasJSON(numeroPaginas = 5) {
+  let arrayPeliculas = [];
+
+  for (let i = 1; i <= numeroPaginas; i++) {
+    const respuestaPeticion = await fetch(
+      `https://api.themoviedb.org/3/discover/movie?page=${i}&language=es-ES&sort_by=popularity.desc&api_key=${IMDB_API_KEY}`,
+    );
+
+    const objeto = await respuestaPeticion.json();
+
+    for (const pelicula of objeto.results) {
+      arrayPeliculas.push(pelicula);
+    }
+  }
+
+  const arrayPeliculasJSON = JSON.stringify(arrayPeliculas);
+  const elementoDescarga = document.createElement("a");
+
+  const blob = new Blob([arrayPeliculasJSON], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+
+  elementoDescarga.href = url;
+  elementoDescarga.download = "peliculas.json";
+  elementoDescarga.click();
 }
