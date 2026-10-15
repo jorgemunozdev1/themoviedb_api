@@ -19,6 +19,26 @@
   --sombra: 0 10px 30px rgba(0, 0, 0, 0.45);
 }
 
+.seleccionado {
+  background-color: #f5c51893;
+}
+
+.fav-btn {
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  background-color: #0d0f14;
+  border-radius: 50%;
+
+  & > * {
+    padding: 5px;
+  }
+
+  & > .fa-solid {
+    color: #e50914;
+  }
+}
+
 *,
 *::before,
 *::after {
@@ -31,7 +51,11 @@ body {
   font-family: "Inter", Arial, sans-serif;
   background:
     radial-gradient(circle at 15% 0%, rgba(229, 9, 20, 0.18), transparent 40%),
-    radial-gradient(circle at 85% 10%, rgba(245, 197, 24, 0.1), transparent 35%),
+    radial-gradient(
+      circle at 85% 10%,
+      rgba(245, 197, 24, 0.1),
+      transparent 35%
+    ),
     var(--fondo);
   background-attachment: fixed;
   color: var(--texto);
@@ -82,7 +106,10 @@ button {
   border-radius: 999px;
   padding: 0.6rem 1.1rem;
   outline: none;
-  transition: border-color 0.2s, background 0.2s, transform 0.1s;
+  transition:
+    border-color 0.2s,
+    background 0.2s,
+    transform 0.1s;
 }
 
 input[type="search"] {
@@ -148,14 +175,19 @@ section {
   border-radius: var(--radio);
   overflow: hidden;
   box-shadow: var(--sombra);
-  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
   animation: aparecer 0.4s ease both;
 }
 
 #cuadricula_peliculas > div:hover {
   transform: translateY(-6px);
   border-color: var(--acento);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px var(--acento);
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.6),
+    0 0 0 1px var(--acento);
 }
 
 @keyframes aparecer {
@@ -432,7 +464,6 @@ dialog::backdrop {
   }
 }
 
-
 /* =========================================================
    Semana 5: barra superior, carga, errores, ficha ampliada,
    formularios de acceso y página de gráficos
@@ -631,7 +662,6 @@ dialog::backdrop {
   font-size: 1.5rem;
   letter-spacing: 1px;
 }
-
 
 /* =========================================================
    Semana 6: reseñas (Firebase)

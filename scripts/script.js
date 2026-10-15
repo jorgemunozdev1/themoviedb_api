@@ -1,6 +1,8 @@
 document.addEventListener("DOMContentLoaded", async function () {
   const todasLasPeliculas = await getPeliculasLocal();
   buscarPeliculas(todasLasPeliculas);
+  ordenarPorValoracion(todasLasPeliculas);
+  filtrarFavoritos(todasLasPeliculas);
 });
 
 async function getPeliculasLocal() {
@@ -32,13 +34,96 @@ function buscarPeliculas(todasLasPeliculas) {
   });
 }
 
+function ordenarPorValoracion(todasLasPeliculas) {
+  const botonOrdenar = document.getElementById("ordenarBtn");
+
+  botonOrdenar.addEventListener("click", (event) => {
+    let boton = event.target;
+    let seleccionado = event.target.classList.contains("seleccionado");
+    if (seleccionado) {
+      boton.classList.remove("seleccionado");
+      limpiarPeliculas();
+      cargarPeliculasEnHTML(todasLasPeliculas);
+    } else {
+      boton.classList.add("seleccionado");
+      const peliculasOrdenadas = structuredClone(todasLasPeliculas);
+      limpiarPeliculas();
+      cargarPeliculasEnHTML(
+        peliculasOrdenadas.sort((a, b) => b.vote_average - a.vote_average),
+      );
+    }
+  });
+}
+
+function filtrarFavoritos(todasLasPeliculas) {
+  const botonFavoritos = document.getElementById("favoritosBtn");
+
+  botonFavoritos.addEventListener("click", (event) => {
+    const arrayIdFavoritos = obtenerFavoritos();
+    const todasLasPeliculasV2 = structuredClone(todasLasPeliculas);
+    const arrayFavoritos = todasLasPeliculasV2.filter((pelicula) =>
+      arrayIdFavoritos.includes(pelicula.id),
+    );
+    let boton = event.target;
+    let seleccionado = event.target.classList.contains("seleccionado");
+    if (seleccionado) {
+      boton.classList.remove("seleccionado");
+      limpiarPeliculas();
+      cargarPeliculasEnHTML(todasLasPeliculas);
+    } else {
+      boton.classList.add("seleccionado");
+      limpiarPeliculas();
+      cargarPeliculasEnHTML(arrayFavoritos);
+    }
+  });
+}
+
 function limpiarPeliculas() {
   const contenedor_peliculas = document.getElementById("cuadricula_peliculas");
   contenedor_peliculas.replaceChildren();
 }
 
+function obtenerFavoritos() {
+  const favoritos = localStorage.getItem("favoritos");
+  if (favoritos === null) {
+    localStorage.setItem("favoritos", JSON.stringify([]));
+    return [];
+  } else {
+    return JSON.parse(favoritos);
+  }
+}
+
+function comprobarFavorito(esFav, iconoFav) {
+  esFav
+    ? iconoFav.classList.add("fa-solid")
+    : iconoFav.classList.add("fa-regular");
+}
+
+function setFavorito(boton, icono, idPelicula) {
+  boton.addEventListener("click", (event) => {
+    const favoritosActuales = obtenerFavoritos();
+    const marcado = favoritosActuales.includes(idPelicula);
+
+    if (marcado) {
+      icono.classList.add("fa-regular");
+      icono.classList.remove("fa-solid");
+
+      const nuevosFavoritos = favoritosActuales.filter(
+        (id) => id !== idPelicula,
+      );
+      localStorage.setItem("favoritos", JSON.stringify(nuevosFavoritos));
+    } else {
+      icono.classList.add("fa-solid");
+      icono.classList.remove("fa-regular");
+      favoritosActuales.push(idPelicula);
+      localStorage.setItem("favoritos", JSON.stringify(favoritosActuales));
+    }
+  });
+}
+
 function cargarPeliculasEnHTML(arrayPeliculas) {
   const contenedor_peliculas = document.getElementById("cuadricula_peliculas");
+  const favoritos = obtenerFavoritos();
 
   for (const pelicula of arrayPeliculas) {
     const div_pelicula = document.createElement("div");
@@ -54,7 +139,25 @@ function cargarPeliculasEnHTML(arrayPeliculas) {
     const fecha = document.createElement("p");
     fecha.textContent = `Fecha de estreno: ${pelicula.release_date}`;
 
-    div_pelicula.append(imagen_pelicula, titulo, valoracion, overview, fecha);
+    const idPelicula = pelicula.id;
+    const favBtn = document.createElement("div");
+    favBtn.classList.add("fav-btn");
+    const iconoCorazon = document.createElement("i");
+    iconoCorazon.classList.add("fa-heart");
+    favBtn.appendChild(iconoCorazon);
+
+    const esFav = favoritos.includes(pelicula.id);
+    comprobarFavorito(esFav, iconoCorazon);
+    setFavorito(favBtn, iconoCorazon, idPelicula);
+
+    div_pelicula.append(
+      imagen_pelicula,
+      titulo,
+      valoracion,
+      overview,
+      fecha,
+      favBtn,
+    );
     contenedor_peliculas.appendChild(div_pelicula);
   }
 }
